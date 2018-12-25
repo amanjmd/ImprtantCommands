@@ -1,2 +1,14 @@
 Adding Maven nature to a folder for importing in eclispe as existing maven project
+===================================================================================
 mvn archetype:generate -DgroupId=com.workUp -DartifactId=restConcurrencyTester -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+*****************************
+
+Connecting a folder to Git .
+=============================
+cd <localdir>
+git init
+git add .
+git commit -m 'message'
+git remote add origin <url>
+git push -u origin master
+*****************************
