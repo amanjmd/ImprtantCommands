@@ -1,1 +1,2 @@
+Adding Maven nature to a folder for importing in eclispe as existing maven project
 mvn archetype:generate -DgroupId=com.workUp -DartifactId=restConcurrencyTester -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
