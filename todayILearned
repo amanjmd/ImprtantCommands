@@ -2,18 +2,40 @@ Locks in  Transactions
 
 These are related to the transactions and the problems with concurrent transactions.
 
-We have certain problems with data reading and writing when transactions are concurrently reading and writing the data. I there can be stages where the data becomes inconsistent.
+
+We have certain problems with data reading and writing when transactions are concurrently reading and writing the data.There can be stages where the data becomes inconsistent.
  
-The problems with the concurrent trasanctions are as follows:
+The problems with the concurrent transactions are as follows:
+
 
 DIRTY Read :
-	This happens where t2 transaction reads the data which is modified by t1 but not commited yet.
+	This happens where t2 transaction reads the data which is modified by t1 but not committed yet.
 
 Non Repeatable reads :
-	This happens when the transaction reads same data but the data retrieved is different each time, which may due to some other transaction updated the data between the two consecutive reads.
+	This happens when the transaction reads same data but the data retrieved is different each time, which may due to some other transaction updated the data between the two consecutive reads. This means that same query returns different data with subsequent request.
 
 Phantom Reads :
-	This happens when transaction , for a certain query , gets the data first time , but the data is deleted or added for the subsequent requests by some other transaction. Meaning, eg 1 row was returned on the first request but 5 rows or 0 rows are returned for the subsequest request.
+	This happens when transaction , for a certain query , gets the data first time , but the data is deleted or added for the subsequent requests by some other transaction. Meaning, eg 1 row was returned on the first request but 5 rows or 0 rows are returned for the subsequent request.
+
+
+To overcome these issues we have isolation levels we can define in spring .
+
+These Isolation levels are 
+
+Read Uncommitted : This allows the dirty reads
+
+Read Committed : This prevents the dirty reads but not the other two problems.
+
+Repeatable reads : This prevents the Non repeatable reads .
+
+Serializable : This prevents phantom reads .
+
+
+Although to change the default isolation level , we need to get a custom dialect . It can be defied as follows :
+
+
+https://www.byteslounge.com/tutorials/spring-change-transaction-isolation-level-example
+
 
 
 
