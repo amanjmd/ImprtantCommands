@@ -29,12 +29,36 @@ Read Committed : This prevents the dirty reads but not the other two problems.
 Repeatable reads : This prevents the Non repeatable reads .
 
 Serializable : This prevents phantom reads .
-
+ 
 
 Although to change the default isolation level , we need to get a custom dialect . It can be defied as follows :
 
 
 https://www.byteslounge.com/tutorials/spring-change-transaction-isolation-level-example
+
+==========================================================================
+
+Optimistic vs pessimistic locking
+
+Optimistic Locking is locking is achieved by annotating a field by @Version.This field can be of Integer , float etc (Any number format).
+
+This keeps the track of the entity has been changed or not. if the entity has been changed but not committed , and if it is tried to read or write , it throws an exception(See for what all exceptions it throws) .
+This means it helps reduce the dirty reads and uncommitted reads.
+
+Optimistic locking is done on entity level(JRE level)
+
+Pessimistic locking is done on the Database level and can raise a deadlock in database entities.
+
+
+==============================================================================
+
+
+
+
+
+ 
+
+ 
 
 
 
