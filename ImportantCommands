@@ -12,3 +12,21 @@ git commit -m 'message'
 git remote add origin <url>
 git push -u origin master
 *****************************
+
+===============================================================================================
+Adding git url to a repository in Git and pushing the code to the master branch 
+We sometimes have to set the upstream like the second command used here .
+
+
+amankapoor@Aman3149421 MINGW64 ~/eclipse-workspace/AlgorithmPractice (master)
+$ git remote add origin https://github.com/amanjmd/Mycode.git
+
+amankapoor@Aman3149421 MINGW64 ~/eclipse-workspace/AlgorithmPractice (master)
+$ git push
+fatal: The current branch master has no upstream branch.
+To push the current branch and set the remote as upstream, use
+
+    git push --set-upstream origin master
+
+===========================================================
+
