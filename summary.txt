@@ -1,0 +1,294 @@
+Static synchronised 
+Every class has a unique class level lock .which is aqquired when the thread wants to execute a static synchronized method .
+Once the thread get the class level lock then it is allowed to execute any  static synchronised method of that class.Once method execution completes  the thread releases the lock automatically.
+
+===============================================================
+class x
+{
+ static sync m1();
+
+static sync m2();
+static  m3();
+ sync m4();
+
+}
+
+
+Thread t1 executes m1 and aqquires a class level lock.
+
+Now thread 2 came to execute m1
+	This thread will not get the chance because t1 has the class level lock. Hence t2 will enter into waiting state.
+
+Now t3 came to execute m2 method.
+	to execute m2 , t3 require class level lock which has alread been accquired by t1
+
+
+now t4 cam to execute m3
+	No lock is required as it is simple static.
+
+now t5 caame to execute m4
+	Since object level is available for the taking , there qill be no problem executing it 
+
+now t6 comes to execute m4
+	object level lock is already taken
+
+while a threAD IS EXECUTING STATUC SYNC METHOD THE REMAINING THREADS ARE NOT ALLOWED TO EXECUTE STATIC SyNCH METHOD
+bUT ARE ALLOWED TO EXECUTE
+	NORMAL STATIC METHODS,
+	INSTANCE METHODS  
+	sYNCHRMOSIED INSTANCE METHODS
+,
+	
+ 
+
+We can use static synchronised methods , when we are running threads on different objects of the class and there is a method that is being used by complete classes . One of the use case is 
+	some Id counter which is incremented in Java itself.
+		(although java has an atomic integer class for this but we can use static sync for incrementing the counter)
+
+
+sync Block 
+
+if very few lines of code requires synchronisation , then entire method is not required to be defined as synchronised. We have to enclose those few lines of code by using synch block. The main adavntage of synch block over synch method , It reduces waitng time of threads and improves performance of the system.
+
+defining synch block :
+
+We can declare sunch block  like this
+ito the get the  lock of current object , then only , it is allowed to execute synchronised area 
+synchronized(this){
+}
+
+Sometimes we want to get the lock of particular object "b"
+
+synchronised(b){
+}
+
+if a thread got lock of particular lock of "b" then only it is allowed to execute this area
+
+To get class level Lock 
+synchronised(<class_name>.class){
+}
+
+If a thread a thread got class level lock of display lock , then only it is allowed to execute this area.
+
+
+For Primitive types , Lock concept is not there 
+int , float , char .. There is no class level or object level locks.
+
+Race condition , when data becomes inconsistent by concurrent threads , this is called race condition.
+
+Can a thread accquire multiple locks simultaneously
+Yes , 
+psvm(){
+X x = new X();
+x.m1();
+}
+
+class X {
+	public synchronized void m1(){
+		// here main thread will have object lock of x
+		Y y = new Y();
+		synchronized(y){
+		// here main thread will have object lock of x,y	
+			Z z = new Z();
+			synchronized(z){
+			// here main thread will have object lock of x,y,z		
+			}	
+		}
+	}
+
+}
+
+Synchronised statements is no official this in java statement but devised by the interviewers the statements present in synchronised blocks are synchronised statement.
+
+==============================================
+
+Inter thread Communication
+----------------------------
+the thread which is expecting updation is responsible to call wait method, then immideatley , the thread will enter to waiting state.
+
+The thread which is responsible for updation  after performing updation ,  it is responsible to call notify methods and enter into to the waiting state. 
+
+after calling notify , the waiting thread will get notification and continue its execution.
+----------------------------
+why wait , notify and notify all present in object class.
+	In case of thread.sleep , thread.join etc , these are only applicable to threads objects . but in case of wait , notify and notifyAll ,we need these methods with all the objects.
+----------------------------
+to call wait, notify and notifyAll on any object ,
+the thread should be the owner of the object.
+the thread should have lock of the object .Hence we can call wait , notify and notify all methods from the synchronized area (synch block or method) .   
+If both the abve conditions are not met , we get runtime exception illegalMonitorStateException
+
+------------------------------
+When wait is called on an object the thread , 
+it immideately releases the lock of the object 
+and it release the lock on only that object on which wait is called and not the other object.
+
+------------------------------
+
+In case of notify/notifyAll , the thread release the lock but may not be immideately.	
+In case of wait , the lock is released immideately.
+
+Except wait , notify and notifyAll methods , there is no other method at which thread releases the lock .. eg sleep , join, yield etc
+
+
+
+Complete prototype:
+public final void wait() throws interruptedException
+public final native void wait(long millisecond) throws interruptedException
+public final void wait(long millisecond, int nanosecond) throws interruptedException
+
+public final native void notify();
+public final native void notifyAll();
+// For the above methods there is no waiting state , it will continue execution after issuing the notify calls
+------------------------------------
+
+when a waiting thread gets notification , it will go to another waiting state , waiting to get the lock of the updated object.
+
+Once waiting thread gets lock of the updated object  it will then come to runnable state.
+
+
+Thread Groups 
+
+Based on functinality , we can group threads . These are called thread groups .ie thread group contains a group of threads.
+in addition to threads , threads group can also contain sub thread groups.
+
+the main advantage of having thread groups is we can perform common operations very easily. for eg , setting priority for all the threads in a group to highest priority.
+
+----------------------------------------------
+All the thread in java belong to a thread group. 
+main thread belong to main group
+
+All thread groups are child of system thread group.
+main group belogs to system group. System group act as root for all thread groups.
+
+System group has system level thread. 
+Some of the system level threads are garbage collector (finaliser), reference handler , signal dispatcher , attach listener etc.
+-------------------------------------------------
+to get thread group of current thread
+
+thread.currentthread().getThreadGroup().getParent() // returns the oarent group of the thread. 
+
+The ultimate parent of thread goups is System.
+
+--------------------------------------------------
+creating thread group 
+
+Thread is a java class present in java.lang package as the direct child to Object class.
+
+COnstructors
+
+ThreadGroup g = new ThreadGroup(String threadGroup)
+
+The parent of this new group is Thread group of currently executing thread.
+
+
+
+ThreadGroup g = new ThreadGroup(ThreadGroup parentGroup , String )
+ThreadGroup g = new ThreadGroup(g,"child Group")
+
+
+We can set a max priority for the threads group and threads with higher priority will not be added to the group.
+if thread group alread had threads with priority higher than max priority , then calling setMaxPriority fir the parent thread group will not affect the already existing threads. But the new threads will be added with maximum priority set for the group.
+
+list method prints information about the group.
+Enumerate(Thread[] pThread)  copies the thread references to a thread arrays.
+getActiveThreadCount gives the count of active thread .(this can be used to declare the thread array when passing to enumerate method)
+
+Concurrent package
+
+There are several problems with synchronised 
+1) we dont have any provision of executing alternate executions if lock is not available. We dont have any flexibility to try for a lock without waiting . 
+2)there is no way to specify maximum waiting time for a thread to get lock so that thread will wait until getting the lock which may create performance problems or deadlock.
+
+3 ) if a thread releases the lcok , we dont have any control on which thread will get the lock if multiple threads are there in scheduler. we dont have fairness policy in traditional synchronised .
+
+4) there it API to get number of threads waiting for lock on an object.
+
+
+5) synchronised is applicable either to a method or within a methid .and it is not possible to use accross multiple methods . 
+
+to overcome these problems , sun peaople introduced java.util.concurrent package in 1.5 version.
+
+Lock is the interface .
+reentrentLock is implementation of lock  Interface.
+Lock object is similar to implicit lock , accquired by a thread to execute a synchronised block /method . 
+Lock implementations provide more extensive operations than traditional locks
+
+Important methods of lock interface
+void lock()
+	We can use this method to accquire a lock. if lock is already available, immideately current thread will get that lock . If the lock is no already available, then it will wait until getting the lock.
+
+boolean tryLock()
+	To accquire the lock without waiting , if the lock is available then the thread accquires the lock ad returns true. If the lock is not available , then this method returns false and can continue its execution without waiting state and it never enters to a waitng state
+
+	Lock l = new ReentrantLock()
+
+	if(l.tryLock())
+	{
+		perform safe synch operations
+	}
+	enclose{
+		perform alternative operations.
+	}
+
+
+
+	boolean tryLock(long time , Timeunit )
+	l.tryLock(1000,Timeunit.millisecond)
+
+	void LockInterruptable()
+	if lock is available , it accquires the lock and returns immideately
+	if Lock is not available , it will wait . While waiting , if the thread is Interrupted , then thread wont get the lock 
+
+	void unlock()
+	This is used to release the lock .
+	To call this method , current thread compulsarily be owner of the lock, or we get illegalMonitorStateException
+
+	ReentrantLock:
+	It is the implementation of the lock interface and it is direct child class of object.
+
+	ReEntrant means that a thread can accquire same lock multiple times without any issue.Internally , reentrant increments thread's personal count whenever lock method is called and decrements the count value whenever threa calls unlock METHOD. 
+	The lock will be released whenever count reaches 0
+
+		Reentrant l = new reentrant(); //this creates an instance of reentrant lock
+
+
+		Reentrant l = new reentrant(boolean fairness)//This creates a reentrant lock with the given fairness policy
+		if the fairness is true then longest waitiing thread can accquire the lock if it is available.ie it follows FCFS policy. If fairness is false then which waiting thread will get the chance , we cant expect.
+		//default valud of fairness is false.
+
+		which of the following declarations are equal.
+
+		Reentrant l = new reentrant()//correct
+		Reentrant l = new reentrant(false)//correct
+		Reentrant l = new reentrant(true)
+		all of the above
+
+		Important methoods of reentrant lock
+
+		lock
+		tryLock
+		tryLock()
+		LockInterruptable
+		unlock
+
+		getHoldCount()
+			Returns number of holds on the lock by current thread
+
+		isHealdByCurrentThread()
+			returns true if lock is held by current thread.
+
+		getQueueLength()
+			returns number of threads waiting for the lock.
+
+		getQueuedThreads
+			returns collection of threads which are waiting to get the lock.
+
+		HasQueuedLength()
+			returns true if any thread waiting to get the lock
+		isLocked
+			return true if lock is accquired by some thread
+		isFair()
+			returntrue if fairness ploicy is is set with true value
+		Thread GetOwner()
+			returns the thread which has the lock if the thread
