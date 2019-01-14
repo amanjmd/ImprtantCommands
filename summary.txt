@@ -292,3 +292,35 @@ boolean tryLock()
 			returntrue if fairness ploicy is is set with true value
 		Thread GetOwner()
 			returns the thread which has the lock if the thread
+
+Thread Pools (Executor Framework)
+
+creating a new thread for every job may create performance and memory problems. To overcome this , we should gor for thread pool. 
+Thread pool is a pool of already created threads ready t do our job.Java 1.5 version introduced thread pool Framework to implement thread pool. This framework is also called executor framework.
+We can create thread pool as follows
+ExecutorSerivce service = Executors.newFixedThreadPool(3)
+
+We can submit a runnabble job by using submit method.
+service.submit(job);
+
+we can shutdown the executor service by using shutdown method.
+service.shutdown();
+
+default thread pool size is 60 for most of the server. While designing weservers and application servers ,we can use thread pool concept .
+-----------------------------------------------------
+===========================================================
+when a thread needs to return something , then we have to use the callable interface.
+======================================================
+
+callable and future
+
+
+in case of runnnable , we have run method which is called by default by the executing thread and it wont return anything after completeing a job.
+
+if a thread is required to return something  after execution , then when we should go for callable , this interface takes only one method 
+
+public Object Call() throws Exception();
+
+if we submit a callable object  to executor then after complete the job , thread returns an object of the type Future.ie. Furture object can be used to retrieve the result from callable job.
+
+
