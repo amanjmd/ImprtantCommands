@@ -49,6 +49,7 @@ Optimistic locking is done on entity level(JRE level)
 
 Pessimistic locking is done on the Database level and can raise a deadlock in database entities.
 
+https://www.baeldung.com/jpa-optimistic-locking
 
 ==============================================================================
 
